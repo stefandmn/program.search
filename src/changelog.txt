@@ -1,0 +1,10 @@
+v1.4
+- Restructure search methods and keep only search dialog GUI window
+- Rename it in program.search
+- Addon icon has been changed (rebranding)
+- Redesign all addon GUI classes and related skin
+- Adapt the addon functionalities to refer service.clue libraries
+- Rename script.globalsearch into script.advancedsearch
+- Finalize/fix search by actors procedure in movies/video area
+- Skin adapted for Clue
+- Inherit add-on functions from original script.globalsearch v3.0.3
