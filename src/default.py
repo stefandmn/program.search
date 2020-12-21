@@ -2,7 +2,7 @@
 
 import sys
 import urllib
-import commons
+import common
 from searcher import GlobalSearchDialog
 
 if hasattr(sys.modules["__main__"], "xbmc"):
@@ -19,12 +19,12 @@ if __name__ == "__main__":
 		searchstring = params.get("searchstring")
 		searchstring = urllib.unquote_plus(searchstring)
 	except:
-		keyboard = xbmc.Keyboard('', commons.translate(32101), False)
+		keyboard = xbmc.Keyboard('', common.translate(32101), False)
 		keyboard.doModal()
 		if keyboard.isConfirmed():
 			searchstring = keyboard.getText()
 
 	if searchstring:
-		search = GlobalSearchDialog("GlobalSearchDialog.xml", commons.AddonPath(), searchstring=searchstring)
+		search = GlobalSearchDialog("GlobalSearchDialog.xml", common.AddonPath(), searchstring=searchstring)
 		search.show()
 		del search

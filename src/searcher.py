@@ -2,7 +2,7 @@
 
 import sys
 import json
-import commons
+import common
 import datetime
 
 if hasattr(sys.modules["__main__"], "xbmc"):
@@ -19,9 +19,9 @@ else:
 class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 
 	def __init__(self, *args, **kwargs):
-		commons.debug('%s v%s has been started' % (commons.AddonName(), commons.AddonVersion()))
+		common.debug('%s v%s has been started' % (common.AddonName(), common.AddonVersion()))
 		self.searchstring = kwargs["searchstring"].replace('(', '[(]').replace(')', '[)]').replace('+', '[+]')
-		commons.debug('Passed search string: %s' %self.searchstring)
+		common.debug('Getting search string: %s' %self.searchstring)
 
 	def onInit(self):
 		if self.searchstring == '':
@@ -65,28 +65,28 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 			self.__params = dict(arg.split("=") for arg in sys.argv[1].split("&"))
 		except:
 			self.__params = {}
-		commons.debug("Loading parameters: %s" %str(self.__params))
-		self.movies = commons.any2bool(self.__params.get("movies", ""))
-		self.tvshows = commons.any2bool(self.__params.get("tvshows", ""))
-		self.episodes = commons.any2bool(self.__params.get("episodes", ""))
-		self.musicvideos = commons.any2bool(self.__params.get("musicvideos", ""))
-		self.artists = commons.any2bool(self.__params.get("artists", ""))
-		self.albums = commons.any2bool(self.__params.get("albums", ""))
-		self.songs = commons.any2bool(self.__params.get("songs", ""))
-		self.actors = commons.any2bool(self.__params.get("actors", ""))
+		common.debug("Loading parameters: %s" %str(self.__params))
+		self.movies = common.any2bool(self.__params.get("movies", ""))
+		self.tvshows = common.any2bool(self.__params.get("tvshows", ""))
+		self.episodes = common.any2bool(self.__params.get("episodes", ""))
+		self.musicvideos = common.any2bool(self.__params.get("musicvideos", ""))
+		self.artists = common.any2bool(self.__params.get("artists", ""))
+		self.albums = common.any2bool(self.__params.get("albums", ""))
+		self.songs = common.any2bool(self.__params.get("songs", ""))
+		self.actors = common.any2bool(self.__params.get("actors", ""))
 
 	def _LoadSettings(self):
-		self.movies = commons.setting("movies")
-		self.tvshows = commons.setting("tvshows")
-		self.episodes = commons.setting("episodes")
-		self.musicvideos = commons.setting("musicvideos")
-		self.artists = commons.setting("artists")
-		self.albums = commons.setting("albums")
-		self.songs = commons.setting("songs")
-		self.actors = commons.setting("actors")
+		self.movies = common.setting("movies")
+		self.tvshows = common.setting("tvshows")
+		self.episodes = common.setting("episodes")
+		self.musicvideos = common.setting("musicvideos")
+		self.artists = common.setting("artists")
+		self.albums = common.setting("albums")
+		self.songs = common.setting("songs")
+		self.actors = common.setting("actors")
 
 	def _runNewSearch(self):
-		keyboard = xbmc.Keyboard('', commons.translate(32101), False)
+		keyboard = xbmc.Keyboard('', common.translate(32101), False)
 		keyboard.doModal()
 		if keyboard.isConfirmed():
 			self.searchstring = keyboard.getText()
@@ -123,9 +123,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(342) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"title","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"title","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('movies'):
 			for item in json_response['result']['movies']:
 				count += 1
@@ -219,9 +217,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(344) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"actor","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"actor","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('movies'):
 			for item in json_response['result']['movies']:
 				count += 1
@@ -315,9 +311,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties": ["title", "genre", "studio", "premiered", "plot", "fanart", "thumbnail", "playcount", "year", "mpaa", "episode", "rating", "art"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties": ["title", "genre", "studio", "premiered", "plot", "fanart", "thumbnail", "playcount", "year", "mpaa", "episode", "rating", "art"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('tvshows'):
 			for item in json_response['result']['tvshows']:
 				count += 1
@@ -369,9 +363,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"properties": ["showtitle", "season", "fanart", "thumbnail", "playcount", "episode"], "sort": { "method": "label" }, "tvshowid":%s }, "id": 1}' % self.tvshowid)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"properties": ["showtitle", "season", "fanart", "thumbnail", "playcount", "episode"], "sort": { "method": "label" }, "tvshowid":%s }, "id": 1}' % self.tvshowid)
 		if json_response['result'] != None and json_response['result'].has_key('seasons'):
 			for item in json_response['result']['seasons']:
 				count += 1
@@ -404,9 +396,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20360) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": ["title", "streamdetails", "plot", "firstaired", "runtime", "season", "episode", "showtitle", "thumbnail", "fanart", "file", "playcount", "director", "rating"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": ["title", "streamdetails", "plot", "firstaired", "runtime", "season", "episode", "showtitle", "thumbnail", "fanart", "file", "playcount", "director", "rating"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('episodes'):
 			for item in json_response['result']['episodes']:
 				count += 1
@@ -495,9 +485,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20389) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": {"properties": ["title", "streamdetails", "runtime", "genre", "studio", "artist", "album", "year", "plot", "fanart", "thumbnail", "file", "playcount", "director"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": {"properties": ["title", "streamdetails", "runtime", "genre", "studio", "artist", "album", "year", "plot", "fanart", "thumbnail", "file", "playcount", "director"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('musicvideos'):
 			for item in json_response['result']['musicvideos']:
 				count += 1
@@ -588,9 +576,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(133) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"properties": ["genre", "description", "fanart", "thumbnail", "formed", "disbanded", "born", "yearsactive", "died", "mood", "style"], "sort": { "method": "label" }, "filter": {"field": "artist", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"properties": ["genre", "description", "fanart", "thumbnail", "formed", "disbanded", "born", "yearsactive", "died", "mood", "style"], "sort": { "method": "label" }, "filter": {"field": "artist", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('artists'):
 			for item in json_response['result']['artists']:
 				count += 1
@@ -636,9 +622,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(132) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": {"properties": ["title", "description", "albumlabel", "artist", "genre", "year", "thumbnail", "fanart", "theme", "type", "mood", "style", "rating"], "sort": { "method": "label" }, "filter": {"field": "album", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": {"properties": ["title", "description", "albumlabel", "artist", "genre", "year", "thumbnail", "fanart", "theme", "type", "mood", "style", "rating"], "sort": { "method": "label" }, "filter": {"field": "album", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('albums'):
 			for item in json_response['result']['albums']:
 				count += 1
@@ -693,9 +677,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		count = 0
 		listitems = []
 		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(134) + '[/B]')
-		json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": {"properties": ["title", "artist", "album", "genre", "duration", "year", "file", "thumbnail", "fanart", "comment", "rating", "track", "playcount"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
-		json_query = unicode(json_query, 'utf-8', errors='ignore')
-		json_response = json.loads(json_query)
+		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": {"properties": ["title", "artist", "album", "genre", "duration", "year", "file", "thumbnail", "fanart", "comment", "rating", "track", "playcount"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('songs'):
 			for item in json_response['result']['songs']:
 				count += 1
@@ -749,7 +731,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 
 	def _playAlbum(self):
 		self._close()
-		xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "albumid": %d } }, "id": 1 }' % int(self.albumid))
+		common.callJSON('{ "jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "albumid": %d } }, "id": 1 }' % int(self.albumid))
 
 	def _browseVideo(self, path):
 		self._close()
@@ -810,4 +792,4 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.close()
 		xbmc.sleep(300)
 		xbmcgui.Window(self.__winid).clearProperty('GlobalSearch.SearchString')
-		commons.debug('%s v%s has been terminated' % (commons.AddonName(), commons.AddonVersion()))
+		common.debug('%s v%s has been terminated' % (common.AddonName(), common.AddonVersion()))
