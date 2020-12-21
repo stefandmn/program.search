@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import json
 import common
 import datetime
 
@@ -23,6 +22,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.searchstring = kwargs["searchstring"].replace('(', '[(]').replace(')', '[)]').replace('+', '[+]')
 		common.debug('Getting search string: %s' %self.searchstring)
 
+
 	def onInit(self):
 		if self.searchstring == '':
 			self._close()
@@ -35,6 +35,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self._LoadSettings()
 			self.__found = False
 			self._search()
+
 
 	def _HideControls(self):
 		self.getControl(119).setVisible(False)
@@ -49,6 +50,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.getControl(198).setVisible(False)
 		self.getControl(199).setVisible(False)
 
+
 	def _ResetControls(self):
 		self.getControl(111).reset()
 		self.getControl(121).reset()
@@ -59,6 +61,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.getControl(171).reset()
 		self.getControl(181).reset()
 		self.getControl(211).reset()
+
 
 	def _LoadParameters(self):
 		try:
@@ -75,6 +78,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.songs = common.any2bool(self.__params.get("songs", ""))
 		self.actors = common.any2bool(self.__params.get("actors", ""))
 
+
 	def _LoadSettings(self):
 		self.movies = common.setting("movies")
 		self.tvshows = common.setting("tvshows")
@@ -85,6 +89,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		self.songs = common.setting("songs")
 		self.actors = common.setting("actors")
 
+
 	def _runNewSearch(self):
 		keyboard = xbmc.Keyboard('', common.translate(32101), False)
 		keyboard.doModal()
@@ -92,6 +97,7 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 			self.searchstring = keyboard.getText()
 			self._ResetControls()
 			self.onInit()
+
 
 	def _search(self):
 		self.getControl(199).setVisible(True)
@@ -119,10 +125,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		else:
 			self.getControl(198).setLabel('')
 
+
 	def _doMovieSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(342) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(342).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"title","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('movies'):
 			for item in json_response['result']['movies']:
@@ -138,7 +145,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				plot = item['plot']
 				outline = item['plotoutline']
 				rating = str(round(float(item['rating']), 1))
-				starrating = 'rating%.1d.png' % round(float(rating) / 2)
 				runtime = str(int((item['runtime'] / 60.0) + 0.5))
 				studio = " / ".join(item['studio'])
 				tagline = item['tagline']
@@ -193,7 +199,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("year", year)
 				listitem.setProperty("playcount", playcount)
 				listitem.setProperty("rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("mpaa", mpaa)
 				listitem.setProperty("writer", writer)
 				listitem.setProperty("director", director)
@@ -213,10 +218,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(111))
 				self.__found = True
 
+
 	def _doActorSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(344) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(344).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties": ["title", "streamdetails", "genre", "studio", "year", "tagline", "plot", "plotoutline", "runtime", "fanart", "thumbnail", "file", "playcount", "rating", "mpaa", "director", "writer"], "sort": { "method": "label" }, "filter": {"field":"actor","operator":"contains","value":"%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('movies'):
 			for item in json_response['result']['movies']:
@@ -232,7 +238,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				plot = item['plot']
 				outline = item['plotoutline']
 				rating = str(round(float(item['rating']), 1))
-				starrating = 'rating%.1d.png' % round(float(rating) / 2)
 				runtime = str(int((item['runtime'] / 60.0) + 0.5))
 				studio = " / ".join(item['studio'])
 				tagline = item['tagline']
@@ -287,7 +292,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("year", year)
 				listitem.setProperty("playcount", playcount)
 				listitem.setProperty("rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("mpaa", mpaa)
 				listitem.setProperty("writer", writer)
 				listitem.setProperty("director", director)
@@ -307,10 +311,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(211))
 				self.__found = True
 
+
 	def _doTVShowSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties": ["title", "genre", "studio", "premiered", "plot", "fanart", "thumbnail", "playcount", "year", "mpaa", "episode", "rating", "art"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('tvshows'):
 			for item in json_response['result']['tvshows']:
@@ -324,7 +329,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				plot = item['plot']
 				premiered = item['premiered']
 				rating = str(round(float(item['rating']), 1))
-				starrating = 'rating%.1d.png' % round(float(rating) / 2)
 				studio = " / ".join(item['studio'])
 				thumb = item['thumbnail']
 				banner = item['art'].get('banner', '')
@@ -345,7 +349,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("premiered", premiered)
 				listitem.setProperty("studio", studio)
 				listitem.setProperty("rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("playcount", playcount)
 				listitem.setProperty("path", path)
 				listitem.setProperty("id", tvshowid)
@@ -359,10 +362,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(121))
 				self.__found = True
 
+
 	def _getSeasons(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20343).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"properties": ["showtitle", "season", "fanart", "thumbnail", "playcount", "episode"], "sort": { "method": "label" }, "tvshowid":%s }, "id": 1}' % self.tvshowid)
 		if json_response['result'] != None and json_response['result'].has_key('seasons'):
 			for item in json_response['result']['seasons']:
@@ -392,10 +396,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(131))
 				self.__found = True
 
+
 	def _doEpisodeSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20360) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20360).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": ["title", "streamdetails", "plot", "firstaired", "runtime", "season", "episode", "showtitle", "thumbnail", "fanart", "file", "playcount", "director", "rating"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('episodes'):
 			for item in json_response['result']['episodes']:
@@ -410,7 +415,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				runtime = str(int((item['runtime'] / 60.0) + 0.5))
 				premiered = item['firstaired']
 				rating = str(round(float(item['rating']), 1))
-				starrating = 'rating%.1d.png' % round(float(rating) / 2)
 				seasonnumber = '%.2d' % float(item['season'])
 				playcount = str(item['playcount'])
 				thumb = item['thumbnail']
@@ -457,7 +461,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("episode", episodenumber)
 				listitem.setProperty("plot", plot)
 				listitem.setProperty("rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("director", director)
 				listitem.setProperty("fanart", fanart)
 				listitem.setProperty("season", seasonnumber)
@@ -481,10 +484,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(141))
 				self.__found = True
 
+
 	def _doMusicvideoSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20389) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(20389).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": {"properties": ["title", "streamdetails", "runtime", "genre", "studio", "artist", "album", "year", "plot", "fanart", "thumbnail", "file", "playcount", "director"], "sort": { "method": "label" }, "filter": {"field": "title", "operator": "contains", "value": "%s"} }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('musicvideos'):
 			for item in json_response['result']['musicvideos']:
@@ -572,10 +576,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(151))
 				self.__found = True
 
+
 	def _doArtistSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(133) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(133).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"properties": ["genre", "description", "fanart", "thumbnail", "formed", "disbanded", "born", "yearsactive", "died", "mood", "style"], "sort": { "method": "label" }, "filter": {"field": "artist", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('artists'):
 			for item in json_response['result']['artists']:
@@ -618,10 +623,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(161))
 				self.__found = True
 
+
 	def _doAlbumSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(132) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(132).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": {"properties": ["title", "description", "albumlabel", "artist", "genre", "year", "thumbnail", "fanart", "theme", "type", "mood", "style", "rating"], "sort": { "method": "label" }, "filter": {"field": "album", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('albums'):
 			for item in json_response['result']['albums']:
@@ -638,10 +644,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				rating = str(item['rating'])
 				if rating == '48':
 					rating = ''
-				if rating != '':
-					starrating = 'rating%.1d.png' % round(float(int(rating)) / 2)
-				else:
-					starrating = 'rating0.png'
 				style = " / ".join(item['style'])
 				theme = " / ".join(item['theme'])
 				albumtype = item['type']
@@ -657,7 +659,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("album_theme", theme)
 				listitem.setProperty("album_style", style)
 				listitem.setProperty("album_rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("album_type", albumtype)
 				listitem.setProperty("album_mood", mood)
 				listitem.setProperty("year", year)
@@ -673,10 +674,11 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(171))
 				self.__found = True
 
+
 	def _doSongSearch(self):
 		count = 0
 		listitems = []
-		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(134) + '[/B]')
+		self.getControl(198).setLabel('[B]' + xbmc.getLocalizedString(194) + " " + xbmc.getLocalizedString(134).lower() + '[/B]')
 		json_response = common.callJSON('{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": {"properties": ["title", "artist", "album", "genre", "duration", "year", "file", "thumbnail", "fanart", "comment", "rating", "track", "playcount"], "sort": { "method": "title" }, "filter": {"field": "title", "operator": "contains", "value": "%s"}, "allroles":true }, "id": 1}' % self.searchstring)
 		if json_response['result'] != None and json_response['result'].has_key('songs'):
 			for item in json_response['result']['songs']:
@@ -695,7 +697,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				track = str(item['track'])
 				playcount = str(item['playcount'])
 				rating = str(int(item['rating']) - 48)
-				starrating = 'rating%.1d.png' % int(rating)
 				year = str(item['year'])
 				listitem = xbmcgui.ListItem(label=song, iconImage='DefaultAlbumCover.png', thumbnailImage=thumb)
 				listitem.setProperty("icon", thumb)
@@ -705,7 +706,6 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				listitem.setProperty("comment", comment)
 				listitem.setProperty("track", track)
 				listitem.setProperty("rating", rating)
-				listitem.setProperty("starrating", starrating)
 				listitem.setProperty("playcount", playcount)
 				listitem.setProperty("duration", duration)
 				listitem.setProperty("fanart", fanart)
@@ -721,25 +721,31 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 				self.setFocus(self.getControl(181))
 				self.__found = True
 
+
 	def _playVideo(self, path):
 		self._close()
 		xbmc.Player().play(path)
+
 
 	def _playAudio(self, path, listitem):
 		self._close()
 		xbmc.Player().play(path, listitem)
 
+
 	def _playAlbum(self):
 		self._close()
 		common.callJSON('{ "jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "albumid": %d } }, "id": 1 }' % int(self.albumid))
+
 
 	def _browseVideo(self, path):
 		self._close()
 		xbmc.executebuiltin('ActivateWindow(Videos,' + path + ',return)')
 
+
 	def _browseAudio(self, path):
 		self._close()
 		xbmc.executebuiltin('ActivateWindow(Music,' + path + ',return)')
+
 
 	def onClick(self, controlId):
 		if controlId == 111:
@@ -781,12 +787,15 @@ class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
 		elif controlId == 199:
 			self._runNewSearch()
 
+
 	def onAction(self, action):
 		if action.getId() in (9, 10, 92, 216, 247, 257, 275, 61467, 61448):
 			self._close()
 
+
 	def show(self):
 		self.doModal()
+
 
 	def _close(self):
 		self.close()

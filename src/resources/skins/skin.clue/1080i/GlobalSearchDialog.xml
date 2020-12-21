@@ -35,12 +35,12 @@
 			<!--Search category label, visible when the script is searching-->
 			<control type="label" id="198">
 				<visible>true</visible>
-				<posx>1-col</posx>
-				<posy>2-row</posy>
+				<posx>10-col</posx>
+				<posy>5</posy>
 				<width>8-col</width>
 				<label>-</label>
 				<font>regular</font>
-				<textcolor>selected</textcolor>
+				<textcolor>unselected</textcolor>
 			</control>
 			<!--'No results found'-->
 			<control type="button" id="199">
