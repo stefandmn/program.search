@@ -3,7 +3,7 @@
 import sys
 import urllib
 import common
-from searcher import GlobalSearchDialog
+from searcher import GlobalSearch
 
 if hasattr(sys.modules["__main__"], "xbmc"):
 	xbmc = sys.modules["__main__"].xbmc
@@ -25,6 +25,6 @@ if __name__ == "__main__":
 			searchstring = keyboard.getText()
 
 	if searchstring:
-		search = GlobalSearchDialog("GlobalSearchDialog.xml", common.AddonPath(), searchstring=searchstring)
+		search = GlobalSearch("GlobalSearch.xml", common.AddonPath(), searchstring=searchstring)
 		search.show()
 		del search

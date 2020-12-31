@@ -15,7 +15,7 @@ else:
 	import xbmcgui
 
 
-class GlobalSearchDialog(xbmcgui.WindowXMLDialog):
+class GlobalSearch(xbmcgui.WindowXMLDialog):
 
 	def __init__(self, *args, **kwargs):
 		common.debug('%s v%s has been started' % (common.AddonName(), common.AddonVersion()))
